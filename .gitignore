@@ -1,0 +1,26 @@
+__pycache__/
+*.py[cod]
+dist/
+archive/
+*.log
+.venv/
+
+# Local agent instructions, handoff notes and working data
+AGENTS.md
+AGENTS.override.md
+PROJECT_CONTEXT.md
+CLAUDE.md
+GEMINI.md
+.agents/
+.codex/
+.codex_backups/
+.claude/
+
+# Reference videos stay on this computer
+/reference/**/*.[mM][pP]4
+/reference/**/*.[mM][oO][vV]
+/reference/**/*.[aA][vV][iI]
+/reference/**/*.[mM][kK][vV]
+/reference/**/*.[wW][mM][vV]
+/reference/**/*.[wW][eE][bB][mM]
+/reference/**/*.[mM]4[vV]

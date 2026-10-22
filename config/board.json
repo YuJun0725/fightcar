@@ -1,0 +1,6 @@
+{
+  "host": "192.168.3.88",
+  "user": "bcsh",
+  "port": 22,
+  "remote_dir": "~/hsy/ceshi"
+}
