@@ -1,0 +1,83 @@
+{
+  "method": "centered rolling median",
+  "window_samples": 5,
+  "edge_rule": "repeat endpoint values",
+  "scope": "motion phase only, separately for each speed and trial",
+  "offline_only": true,
+  "additional_smoothing": false,
+  "time_shift_s": 0,
+  "coordinate_changes": false,
+  "sample_deletion": false,
+  "resampling": false,
+  "distance_method": "Unchanged: 80-to-10 cm linear mapping using existing motor acknowledgement timestamps",
+  "note": "Filters ADC only; does not correct sensor response, clock offset or estimated distance error. Median filtering is not ground truth.",
+  "source_sha256": {
+    "raw_adc_distance/aligned_raw_samples.csv": "4f98d7046aaae3b235863560c83b06f402890cc5021a1def7536b1540ea84f8d",
+    "raw_adc_distance/alignment.json": "5ee962a915206c84aee447007883277149ffb2c118246d945308769ed26e6694",
+    "raw_adc_distance/plot_raw.py": "4b009227dc8d024df865206d982ef91e0a94af094b68865842bdbcd04ecf2c65",
+    "raw_adc_distance/raw_adc_distance_100rpm.png": "5b1e0c66e7efc3b429a92e3561c63e82b08fdcc1b8a4a02358f55aa57a084f24",
+    "raw_adc_distance/raw_adc_distance_200rpm.png": "97a38cdedbdab2df5efa7dfb3caba1c701eb048ba1e97d212b4554cd292fe73d",
+    "raw_adc_distance/raw_adc_distance_25rpm.png": "d49c0a026018f237650e76dfae555a30781065b38c057ef1eed4250c0e92b39a",
+    "raw_adc_distance/raw_adc_distance_4speeds.png": "2133d2cde2d7c55b3515a7489ec5cd420bf9fcb9be5c6663b025d63fe0796b57",
+    "raw_adc_distance/raw_adc_distance_4speeds.svg": "e88f91cf6debd6bb2089f060de620af412578e6073d59db3d389431851e0a011",
+    "raw_adc_distance/raw_adc_distance_50rpm.png": "f68a68d102ffea10accd3723d0254b9ac9d298ebe6a1c9b2db0e4b0eba4d5443",
+    "raw_adc_distance/raw_adc_distance_overlay.png": "3611f706950c5f44bae1a6d048039af641f71b0fe340a8b1a27aae35e2183819",
+    "raw_adc_distance/raw_adc_time_alignment.png": "28494d599901983c363d8ebbc4aa32a1d41b8012204a8e000fd8a1045036669e",
+    "raw_adc_distance/README.md": "691e2737367a1492f717077d61c0f035167b36c34a96b2491f61d04b023bf0be",
+    "motor_log.txt": "d85f5de847e59b3aaf281a0f948d789ae1e638d98625be8b1853180fcaf243ee",
+    "ir_sensor_100.csv": "3f61aaf3d3e2ca19787ec919e9bd45c57abc62f131b69f7d104f6f3b0e5b1982",
+    "ir_sensor_200.csv": "c3fe90c9531b69c677b921abf35ef6c356085a6bf872104a1c511f13390186a6",
+    "ir_sensor_25.csv": "ef70d9ed32f5f3fc93ac2b29585e9c0af454f9c3326d70bdcc06b95a2abb1e75",
+    "ir_sensor_50.csv": "455de2dd346337cebe31116c371c03d862790dc23be56203ccc0cb33ab1cb0c1"
+  },
+  "runs": [
+    {
+      "rpm": 25,
+      "nominal_speed_cm_s": 3.125,
+      "sample_count": 432,
+      "start_time": "2026-10-26T22:20:43.340+08:00",
+      "end_time": "2026-10-26T22:21:05.788+08:00",
+      "changed_samples": 275,
+      "median_abs_change_adc": 2.0,
+      "max_abs_change_adc": 257,
+      "median_full_window_time_span_s": 0.20700000000000007,
+      "median_full_window_distance_span_cm": 0.6454918029999988
+    },
+    {
+      "rpm": 50,
+      "nominal_speed_cm_s": 6.25,
+      "sample_count": 218,
+      "start_time": "2026-10-26T22:20:07.546+08:00",
+      "end_time": "2026-10-26T22:20:18.775+08:00",
+      "changed_samples": 143,
+      "median_abs_change_adc": 3.0,
+      "max_abs_change_adc": 116,
+      "median_full_window_time_span_s": 0.2060000000000004,
+      "median_full_window_distance_span_cm": 1.2841749050000004
+    },
+    {
+      "rpm": 100,
+      "nominal_speed_cm_s": 12.5,
+      "sample_count": 111,
+      "start_time": "2026-10-26T22:18:55.528+08:00",
+      "end_time": "2026-10-26T22:19:01.287+08:00",
+      "changed_samples": 70,
+      "median_abs_change_adc": 2,
+      "max_abs_change_adc": 257,
+      "median_full_window_time_span_s": 0.20700000000000007,
+      "median_full_window_distance_span_cm": 2.516061816000004
+    },
+    {
+      "rpm": 200,
+      "nominal_speed_cm_s": 25.0,
+      "sample_count": 56,
+      "start_time": "2026-10-26T22:18:19.270+08:00",
+      "end_time": "2026-10-26T22:18:22.165+08:00",
+      "changed_samples": 27,
+      "median_abs_change_adc": 0.0,
+      "max_abs_change_adc": 117,
+      "median_full_window_time_span_s": 0.20600000000000002,
+      "median_full_window_distance_span_cm": 4.981001726999999
+    }
+  ]
+}

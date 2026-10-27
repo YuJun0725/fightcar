@@ -1,0 +1,143 @@
+{
+  "source_file": "光电、灰度.xlsx",
+  "source_sha256": "8d3b05a001063b35a507da195e1aa9dbf483c4eed02b1354816fa59193c3f9cc",
+  "source_sheet": "Sheet1",
+  "scalar_records": 126,
+  "confirmed": {
+    "optical_offset_cm": 3.5,
+    "optical_angle_repeats": 3,
+    "gray_1": "最白",
+    "gray_9": "最黑"
+  },
+  "summaries": {
+    "surface": {
+      "粗糙": {
+        "distance_mean": 36.06666666666666,
+        "distance_sd": 0.2516611478423586,
+        "return_mean": 35.86666666666667,
+        "return_sd": 0.15275252316519297,
+        "mean_absolute_gap": 0.1999999999999981
+      },
+      "光面": {
+        "distance_mean": 52.233333333333334,
+        "distance_sd": 0.7505553499465134,
+        "return_mean": 51.8,
+        "return_sd": 2.066397831977183,
+        "mean_absolute_gap": 2.1000000000000014
+      }
+    },
+    "optical_angle": [
+      {
+        "angle": 15,
+        "mean": 33.666666666666664,
+        "sd": 0.32145502536643233
+      },
+      {
+        "angle": 30,
+        "mean": 30.033333333333335,
+        "sd": 0.0577350269189634
+      },
+      {
+        "angle": 45,
+        "mean": 27.633333333333333,
+        "sd": 0.20816659994661424
+      },
+      {
+        "angle": 60,
+        "mean": 24.23333333333333,
+        "sd": 0.28867513459481287
+      }
+    ],
+    "calibration": {
+      "method": "distance_cm = a / ADC + b",
+      "a": 21632.584447772588,
+      "b": 4.103689394433485,
+      "adc_range": [
+        276.8,
+        2593.3
+      ],
+      "distance_range_cm": [
+        10,
+        80
+      ],
+      "fit_points": 8,
+      "in_sample_rmse_cm": 1.6114170996524388,
+      "in_sample_max_abs_cm": 2.445410154766879,
+      "independent_validation": false
+    },
+    "black_minus_white_pct": [
+      0.4382493194586524,
+      -2.7878376339218383,
+      -1.3326528297606894,
+      -1.9989068478176102,
+      -5.470920762671268,
+      -2.69501792557794,
+      -3.8304552590266843,
+      -10.0
+    ],
+    "bright_minus_dark": [
+      504.0,
+      388.0,
+      321.0,
+      220.0,
+      159.0,
+      67.0,
+      7.0,
+      -14.0,
+      -27.0
+    ]
+  },
+  "figures": [
+    {
+      "file": "figures/01_photo_surface.png",
+      "title": "光电传感器：不同表面的去程与回程",
+      "note": "去程、回程各 n=3；柱为均值，误差棒为样本标准差，散点为逐次测量；距离均已扣除 3.5 cm。"
+    },
+    {
+      "file": "figures/02_photo_angle.png",
+      "title": "光电传感器：目标夹角对探测距离的影响",
+      "note": "每个角度重复测量三次；散点横向微错位仅为显示；距离均已扣除 3.5 cm，未改变角度。"
+    },
+    {
+      "file": "figures/03_distance_static.png",
+      "title": "距离传感器：静态基准 ADC—距离",
+      "note": "原表速度=0，8 个距离点；基准目标的颜色、夹角和每点采样数未记录；无滤波或跨距离平均。"
+    },
+    {
+      "file": "figures/04_distance_color.png",
+      "title": "距离传感器：不同目标颜色",
+      "note": "黑白各为原表记录点，未知是否为多次均值；未注明颜色的基准不擅自归为本色；差值不代表统计显著性。"
+    },
+    {
+      "file": "figures/05_distance_angle.png",
+      "title": "距离传感器：不同目标夹角",
+      "note": "保留 15°、30°、45° 的全部原表数值；基准夹角未填写，未将其直接标成 0°。"
+    },
+    {
+      "file": "figures/06_gray_distance_cards.png",
+      "title": "灰度传感器：距离与色卡编号",
+      "note": "每个组合仅有一个记录值；1 最白、9 最黑是顺序编号，不是真实反射率；此组环境光未注明。"
+    },
+    {
+      "file": "figures/07_gray_light.png",
+      "title": "灰度传感器：3 cm 时的环境光影响",
+      "note": "暗、亮均为原表记录值；没有照度 lx 或重复测量，不能据此计算显著性；负差值照实保留。"
+    },
+    {
+      "file": "figures/08_distance_calibration.png",
+      "title": "距离传感器：候选标定与同点拟合残差",
+      "note": "仅用 8 个静态基准点拟合；残差来自同一批拟合点，不是独立验证精度；不得外推或替代实测标定验收。"
+    }
+  ],
+  "corrections": {
+    "source_distance_column": "outbound",
+    "angle_repeat_labels": "trial 1, 2, 3; corrected distance only",
+    "workbook_sheets": 3,
+    "removed_sheets": 4
+  },
+  "merged_sensor_sheets": [
+    "光电传感器",
+    "距离传感器",
+    "灰度传感器"
+  ]
+}
