@@ -2,5 +2,6 @@
   "host": "192.168.3.88",
   "user": "bcsh",
   "port": 22,
-  "remote_dir": "~/hsy/ceshi"
+  "remote_dir": "~/hsy/ceshi",
+  "sensor_port": 8766
 }

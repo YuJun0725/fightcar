@@ -4,6 +4,7 @@ dist/
 archive/
 *.log
 .venv/
+measurements/
 
 # Local agent instructions, handoff notes and working data
 AGENTS.md

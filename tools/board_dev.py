@@ -14,9 +14,9 @@ import subprocess
 
 HERE = Path(__file__).resolve().parent
 PROJECT = HERE.parent
-SOURCES = {
-    name: PROJECT / "src" / "board" / name
-    for name in ("keyboard_car.py", "motor_check.py", "motor_server.py", "uptech.py")
+SOURCE_NAMES = {
+    "motor": ("keyboard_car.py", "motor_check.py", "motor_server.py", "uptech.py"),
+    "sensor": ("sensor_server.py", "uptech.py"),
 }
 
 # 通过SSH发送给板端Python执行，无需在板上安装此工具或Codex。
@@ -25,9 +25,16 @@ import base64, hashlib, json, os, pathlib, platform, shutil, socket, sys, uuid
 from datetime import datetime
 request = json.load(sys.stdin)
 base = pathlib.Path(request['remote_dir']).expanduser().resolve()
-names = ('keyboard_car.py', 'motor_check.py', 'motor_server.py', 'uptech.py')
+groups = {
+    'motor': ('keyboard_car.py', 'motor_check.py', 'motor_server.py', 'uptech.py'),
+    'sensor': ('sensor_server.py', 'uptech.py'),
+}
+group = request.get('target', 'motor')
+if group not in groups:
+    raise ValueError('Unsupported target')
+names = groups[group]
 action = request['command']
-result = {'remote_dir': str(base), 'hostname': socket.gethostname(),
+result = {'remote_dir': str(base), 'target': group, 'hostname': socket.gethostname(),
           'python': platform.python_version(), 'machine': platform.machine()}
 if action == 'check':
     result['exists'] = base.is_dir()
@@ -85,7 +92,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command", choices=("check", "pull", "deploy", "shell"), nargs="?", default="check")
     parser.add_argument("--dry-run", action="store_true", help="仅检查本地文件并预览，不连接开发板")
+    parser.add_argument("--target", choices=tuple(SOURCE_NAMES), default="motor",
+                        help="同步目标：motor小车控制（默认），sensor传感器采集")
     args = parser.parse_args()
+    sources = {name: PROJECT / "src" / "board" / name for name in SOURCE_NAMES[args.target]}
     config = json.loads((PROJECT / "config" / "board.json").read_text(encoding="utf-8-sig"))
     for key in ("host", "user", "remote_dir"):
         if not isinstance(config.get(key), str) or not config[key].strip():
@@ -93,16 +103,17 @@ def main():
     if type(config.get("port")) is not int or not 1 <= config["port"] <= 65535:
         parser.error("board.json 中port应为1~65535的整数")
     target = config["user"] + "@" + config["host"]
-    payload = dict(command=args.command, remote_dir=config["remote_dir"])
+    payload = dict(command=args.command, remote_dir=config["remote_dir"], target=args.target)
     if args.command == "deploy" or args.dry_run:
         payload["files"] = {}
-        for name, path in SOURCES.items():
+        for name, path in sources.items():
             data = path.read_bytes()
             ast.parse(data.decode("utf-8-sig"), filename=str(path), feature_version=(3, 8))
             payload["files"][name] = base64.b64encode(data).decode("ascii")
     if args.dry_run:
         print(json.dumps(dict(command=args.command, target=target, remote_dir=config["remote_dir"],
-                              files=list(SOURCES), network_access=False), ensure_ascii=False, indent=2))
+                              source_group=args.target, files=list(sources), network_access=False),
+                         ensure_ascii=False, indent=2))
         return
     if not shutil.which("ssh"):
         parser.error("未找到ssh命令，请安装Windows OpenSSH客户端")
@@ -124,7 +135,7 @@ def main():
     if args.command == "pull":
         snapshot = PROJECT / "archive" / "board_snapshots" / datetime.now().strftime("%Y%m%d_%H%M%S_%f")
         for name, content in result["files"].items():
-            if name not in SOURCES:
+            if name not in sources:
                 raise ValueError("板端返回了未允许的文件名")
             snapshot.mkdir(parents=True, exist_ok=True)
             (snapshot / name).write_bytes(base64.b64decode(content, validate=True))

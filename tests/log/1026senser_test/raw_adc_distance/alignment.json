@@ -1,0 +1,107 @@
+{
+  "timezone": "UTC+08:00; naive sensor timestamps assigned +08:00 without an additional shift",
+  "start_distance_cm": 80.0,
+  "end_distance_cm": 10.0,
+  "endpoints_confirmed_by_user": true,
+  "distance_method": "Linear 80-to-10 cm mapping over matched motor command acknowledgement interval",
+  "nominal_speed_note": "User estimates 200 rpm is about 25 cm/s; other nominal labels scale proportionally. Not independently measured.",
+  "motor_timing_note": "Start is confirmed motion message; end is RX acknowledgement of stop register. Not encoder-measured mechanical start/stop.",
+  "adc_processing": "None: no filtering, averaging, smoothing, outlier removal or resampling",
+  "source_sha256": {
+    "motor_log.txt": "d85f5de847e59b3aaf281a0f948d789ae1e638d98625be8b1853180fcaf243ee",
+    "ir_sensor_100.csv": "3f61aaf3d3e2ca19787ec919e9bd45c57abc62f131b69f7d104f6f3b0e5b1982",
+    "ir_sensor_200.csv": "c3fe90c9531b69c677b921abf35ef6c356085a6bf872104a1c511f13390186a6",
+    "ir_sensor_25.csv": "ef70d9ed32f5f3fc93ac2b29585e9c0af454f9c3326d70bdcc06b95a2abb1e75",
+    "ir_sensor_50.csv": "455de2dd346337cebe31116c371c03d862790dc23be56203ccc0cb33ab1cb0c1"
+  },
+  "runs": [
+    {
+      "source_file": "ir_sensor_25.csv",
+      "rpm": 25,
+      "adc_channels": [
+        "8"
+      ],
+      "start_time": "2026-10-26T22:20:43.340+08:00",
+      "end_time": "2026-10-26T22:21:05.788+08:00",
+      "duration_s": 22.448,
+      "start_log_line": 250,
+      "end_log_line": 254,
+      "start_log_message": "反转 25 圈/分 · 连续运行，点击停止结束。指令已确认。",
+      "end_log_message": "RX  01 06 00 03 00 01 B8 0A",
+      "raw_rows": 575,
+      "motion_rows": 432,
+      "before_rows": 41,
+      "after_rows": 102,
+      "endpoint_based_speed_cm_s": 3.11831789023521,
+      "approximate_nominal_speed_cm_s": 3.125,
+      "csv_first_time": "2026-10-26T22:20:41.248000+08:00",
+      "csv_last_time": "2026-10-26T22:21:11.063000+08:00"
+    },
+    {
+      "source_file": "ir_sensor_50.csv",
+      "rpm": 50,
+      "adc_channels": [
+        "8"
+      ],
+      "start_time": "2026-10-26T22:20:07.546+08:00",
+      "end_time": "2026-10-26T22:20:18.775+08:00",
+      "duration_s": 11.229,
+      "start_log_line": 224,
+      "end_log_line": 228,
+      "start_log_message": "反转 50 圈/分 · 连续运行，点击停止结束。指令已确认。",
+      "end_log_message": "RX  01 06 00 03 00 01 B8 0A",
+      "raw_rows": 407,
+      "motion_rows": 218,
+      "before_rows": 70,
+      "after_rows": 119,
+      "endpoint_based_speed_cm_s": 6.233858758571556,
+      "approximate_nominal_speed_cm_s": 6.25,
+      "csv_first_time": "2026-10-26T22:20:03.899000+08:00",
+      "csv_last_time": "2026-10-26T22:20:24.923000+08:00"
+    },
+    {
+      "source_file": "ir_sensor_100.csv",
+      "rpm": 100,
+      "adc_channels": [
+        "8"
+      ],
+      "start_time": "2026-10-26T22:18:55.528+08:00",
+      "end_time": "2026-10-26T22:19:01.287+08:00",
+      "duration_s": 5.759,
+      "start_log_line": 188,
+      "end_log_line": 192,
+      "start_log_message": "反转 100 圈/分 · 连续运行，点击停止结束。指令已确认。",
+      "end_log_message": "RX  01 06 00 03 00 01 B8 0A",
+      "raw_rows": 290,
+      "motion_rows": 111,
+      "before_rows": 53,
+      "after_rows": 126,
+      "endpoint_based_speed_cm_s": 12.154888001389129,
+      "approximate_nominal_speed_cm_s": 12.5,
+      "csv_first_time": "2026-10-26T22:18:52.841000+08:00",
+      "csv_last_time": "2026-10-26T22:19:07.799000+08:00"
+    },
+    {
+      "source_file": "ir_sensor_200.csv",
+      "rpm": 200,
+      "adc_channels": [
+        "8"
+      ],
+      "start_time": "2026-10-26T22:18:19.270+08:00",
+      "end_time": "2026-10-26T22:18:22.165+08:00",
+      "duration_s": 2.895,
+      "start_log_line": 162,
+      "end_log_line": 166,
+      "start_log_message": "反转 200 圈/分 · 连续运行，点击停止结束。指令已确认。",
+      "end_log_message": "RX  01 06 00 03 00 01 B8 0A",
+      "raw_rows": 519,
+      "motion_rows": 56,
+      "before_rows": 313,
+      "after_rows": 150,
+      "endpoint_based_speed_cm_s": 24.179620034542314,
+      "approximate_nominal_speed_cm_s": 25.0,
+      "csv_first_time": "2026-10-26T22:18:03.069000+08:00",
+      "csv_last_time": "2026-10-26T22:18:29.969000+08:00"
+    }
+  ]
+}
