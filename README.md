@@ -100,6 +100,19 @@ py -3 src/desktop/windows_client.py
 
 上位机连接 `127.0.0.1:8765`，可检查操作界面和指令通信。模拟模式不加载电机库，也不控制真实电机。
 
+## 传感器实验软件
+
+独立实验上位机支持光电开关、距离和灰度传感器的多通道采集、实时曲线、静态点统计、运动标记、距离标定、历史对比及 CSV/PNG 保存。实验类型对应[传感器测试方案](传感器测试方案.md)中的十二项测试。
+
+电脑上体验模拟采集：
+
+```powershell
+py -3 -m pip install -r src/desktop/requirements.txt
+py -3 src/desktop/sensor_client.py --simulate
+```
+
+实物采集使用独立的 `sensor_server.py` 与 SSH 隧道端口 8766；轨道由用户手动操作，软件计算的位置会标明“估计”。部署及操作步骤见 [Windows 上位机说明](src/desktop/README.md)。默认实验记录在按需生成的 `measurements/`，不提交 Git。
+
 ## 当前进展
 
 实车已反馈前进、后退正常。原地旋转曾出现仅一侧转动的情况，近似原地转弯对照后反馈两侧可转动，但 A/D 是否完全恢复、左右速度差异及故障根因仍待进一步验证。
@@ -108,6 +121,7 @@ py -3 src/desktop/windows_client.py
 
 ## 相关说明
 
+- [传感器测试方案](传感器测试方案.md)：光电开关、距离和灰度传感器的测试、标定与数据分析。
 - [程序总览](src/README.md)：鲁班猫程序与 Windows 上位机的分工。
 - [连接配置](config/README.md)：开发板地址、SSH 端口和代码目录。
 - [开发工具](tools/README.md)：代码同步、快照与打包工具。
