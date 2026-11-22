@@ -1,0 +1,4 @@
+# Optional dependencies, installed only for the standalone vision module.
+# This OpenCV release provides Linux aarch64 wheels and supports Python 3.8.
+numpy>=1.21.2,<3
+opencv-contrib-python-headless==4.10.0.84

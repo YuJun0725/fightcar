@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FightCar · 相机测距</title>
+<style>
+  :root{color-scheme:light;--ink:#152e30;--muted:#4b6768;--line:#d7e4e0;--teal:#08725e}
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  body{margin:0;background:#eef4f1;color:var(--ink);font:15px/1.5 "Microsoft YaHei UI",system-ui,sans-serif}
+  main{max-width:1240px;margin:auto;padding:26px clamp(14px,3vw,34px)}
+  h1,h2,p{margin:0}
+  h1{font-size:clamp(1.45rem,3vw,2rem);letter-spacing:.01em}
+  h2{font-size:1rem}
+  header,.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  header{margin-bottom:16px}
+  .status{border-radius:999px;display:inline-block;background:#f5ead2;color:#684508;padding:4px 12px;font-weight:600}
+  .status.live{background:#d6f1e7;color:#095843}
+  .status.error{background:#fbe2db;color:#832f23}
+  .layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(270px,1fr);gap:16px;align-items:start}
+  .panel{border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px}
+  .stage{margin-top:12px;background:#11272b;border-radius:10px;overflow:hidden;color:#c4d9db}
+  .stage img{display:block;width:100%;height:auto}
+  .stage p{min-height:210px;aspect-ratio:4/3;display:grid;place-items:center;text-align:center;padding:20px}
+  .legend,.muted{color:var(--muted);font-size:.88rem}
+  .legend{margin-top:10px}
+  .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  a.btn{display:inline-block;border:1px solid #a6c9bc;border-radius:8px;padding:5px 10px;color:var(--teal);font-weight:650;text-decoration:none}
+  a.btn:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+  .distance{color:var(--teal);font-size:clamp(2.35rem,5vw,3.3rem);line-height:1.18;font-weight:700;font-variant-numeric:tabular-nums;margin:7px 0}
+  .distance small{font-size:1.05rem;font-weight:600}
+  #message{margin:7px 0;color:var(--muted)}
+  #blocks{list-style:none;padding:0;margin:12px 0}
+  #blocks li{border-top:1px solid var(--line);padding:8px 0;overflow-wrap:anywhere}
+  #blocks li span{display:block;font-size:.83rem;color:var(--muted)}
+  #tags,#stats,#notes{margin-top:10px;padding-top:9px;border-top:1px solid var(--line);overflow-wrap:anywhere}
+  @media(max-width:750px){.layout{grid-template-columns:1fr}}
+</style>
+<main>
+  <header><h1>FightCar · 相机测距</h1><span class="status" id="status">等待相机</span></header>
+  <div class="layout">
+    <section class="panel" aria-label="实时图像">
+      <div class="bar">
+        <h2>实时画面</h2>
+        <div class="controls"><span id="resolution" class="muted"></span><a id="raw" class="btn" href="/raw.png" download hidden>下载标定原图</a></div>
+      </div>
+      <div class="stage">
+        <img id="preview" alt="摄像头与 AprilTag 识别标注" hidden>
+        <p id="placeholder">等待第一帧</p>
+      </div>
+      <p class="legend">绿框：AprilTag　橙色十字：方块中心</p>
+    </section>
+    <section class="panel" aria-label="方块距离">
+      <h2>最近方块中心距离</h2>
+      <div class="distance"><span id="distance">—</span> <small>cm</small></div>
+      <p id="message">显示相机到方块中心的直线距离</p>
+      <ul id="blocks"></ul>
+      <div id="tags" class="muted">标签：—</div>
+      <div id="stats" class="muted">识别速度：—</div>
+      <div id="notes" class="muted" hidden></div>
+    </section>
+  </div>
+</main>
+<script>
+  const get = id => document.getElementById(id);
+  const status = get('status'), preview = get('preview'), placeholder = get('placeholder');
+  const numbers = get('blocks'), stats = get('stats'), notes = get('notes'), raw = get('raw');
+  const cm = value => (value * 100).toFixed(1);
+  const fmt = value => typeof value === 'number' ? value.toFixed(1) : '—';
+  const setup = {
+    calibration_missing: '相机尚未标定，距离暂不显示',
+    tag_size_missing: '请填写标签黑框的实测边长',
+  };
+  let seq = 0;
+  const tabId = Math.random().toString(36).slice(2, 10);
+  let downloadNumber = 0;
+  raw.addEventListener('click', () => {
+    const stamp = new Date().toISOString().replace(/[^0-9]/g, '');
+    const number = String(++downloadNumber).padStart(3, '0');
+    const filename = 'checkerboard-' + stamp + '-' + tabId + '-' + number + '.png';
+    raw.download = filename;
+    raw.href = '/raw/' + filename;
+  });
+
+  function connection(label, kind) {
+    status.textContent = label;
+    status.className = 'status ' + kind;
+  }
+  function clear(message, kind) {
+    seq = 0;
+    connection(kind === 'error' ? '预览中断' : '等待画面', kind);
+    preview.removeAttribute('src');
+    preview.hidden = raw.hidden = notes.hidden = true;
+    placeholder.hidden = false;
+    placeholder.textContent = message;
+    get('resolution').textContent = '';
+    get('distance').textContent = '—';
+    get('message').textContent = '等待有效的方块位置';
+    get('tags').textContent = '标签：—';
+    stats.textContent = '识别速度：—';
+    numbers.replaceChildren();
+  }
+  function render(data) {
+    if (data.state !== 'live') {
+      clear(data.message, data.state === 'error' ? 'error' : '');
+      return;
+    }
+    seq = data.seq;
+    connection('实时', 'live');
+    preview.src = 'data:image/jpeg;base64,' + data.jpeg;
+    preview.hidden = raw.hidden = false;
+    placeholder.hidden = true;
+    get('resolution').textContent = data.image_size.join(' × ') +
+      (data.undistorted ? ' · 已去畸变' : ' · 原始画面');
+    get('distance').textContent = data.blocks.length ? cm(data.blocks[0].distance_m) : '—';
+    get('message').textContent = data.blocks.length ? '相机到方块中心的直线距离' :
+      setup[data.pose_status] || (!data.center_geometry ? '已能识别标签，方块中心还需安装偏移' :
+        data.tags.length ? '这一帧未得到有效方块中心' : '这一帧未看到标签');
+    get('tags').textContent = '标签 ' + data.family + '：' +
+      (data.tags.map(tag => tag.id).join('、') || '未识别');
+    numbers.replaceChildren();
+    for (const block of data.blocks) {
+      const item = document.createElement('li');
+      const detail = document.createElement('span');
+      item.textContent = block.id + ' · ' + cm(block.distance_m) + ' cm';
+      detail.textContent = '前向 ' + cm(block.forward_m) + ' cm · Tag ' + block.tag_ids.join('、');
+      item.append(detail);
+      numbers.append(item);
+    }
+    stats.textContent = '识别 ' + fmt(data.detect_fps) + ' fps · ' + fmt(data.detect_ms) +
+      ' ms/帧 ｜ 预览 ' + fmt(data.preview_fps) + ' fps · ' + fmt(data.preview_ms) + ' ms/帧';
+    notes.hidden = data.warnings.length === 0;
+    notes.textContent = data.warnings.join('；');
+  }
+  async function poll() {
+    const request = new AbortController();
+    const timer = setTimeout(() => request.abort(), 2500);
+    try {
+      const reply = await fetch('/api/frame?after=' + seq, {signal:request.signal, cache:'no-store'});
+      if (reply.status === 200) render(await reply.json());
+      else if (reply.status !== 204) throw new Error('preview response');
+    } catch (_) {
+      clear('无法读取预览，请检查 SSH 隧道和鲁班猫上的预览程序', 'error');
+    } finally {
+      clearTimeout(timer);
+      setTimeout(poll, 120);
+    }
+  }
+  poll();
+</script>
+</html>

@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "family": "tag36h11",
+  "tag_size_m": 0.075,
+  "block_center_offset_m": [0, 0, -0.075],
+  "camera": {
+    "source": 0,
+    "width": 640,
+    "height": 480,
+    "fps": 15,
+    "calibration": {
+      "image_size": [
+        640,
+        480
+      ],
+      "camera_matrix": [
+        [
+          485.303975918151,
+          0.0,
+          312.81012863236833
+        ],
+        [
+          0.0,
+          483.9469135414048,
+          261.69378344340555
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "dist_coeffs": [
+        -0.4442637185135186,
+        0.28895555150154806,
+        -0.005472301354826005,
+        0.00307953176863105,
+        -0.14950979679536722
+      ]
+    }
+  },
+  "detector": {
+    "opencv_threads": 1,
+    "max_reprojection_error_px": 3.0
+  },
+  "position_filter": {
+    "enabled": false,
+    "method": "ema",
+    "alpha": 0.6,
+    "window": 3,
+    "reset_after_s": 0.3
+  },
+  "multi_tag_fusion": {
+    "enabled": false,
+    "min_tags": 2,
+    "max_spread_m": 0.08,
+    "same_id_max_spread_m": 0.03,
+    "fallback_to_single": true,
+    "blocks": []
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "drive": {"left_id": 1, "right_id": 2, "reverse": true, "refresh_s": 0.1},
+  "speed": 180,
+  "front_adc": 7,
+  "rear_adc": 8,
+  "edge_threshold": 400,
+  "arm_threshold": 600,
+  "arm_confirm_s": 0.25,
+  "rear_photo": {"left_io": 6, "right_io": 4, "active_level": 1}
+}
