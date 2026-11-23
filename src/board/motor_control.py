@@ -22,9 +22,11 @@ def wheel_speeds(action, speed, spin_speed, width, radius):
 
 def motor_commands(ids, wheels, reverse=False):
     """整车轮速映射为驱动器指令，供直接发送和定时调度共用。"""
+    # 交换前进和后退，同时保持左右转向分量。
+    left, right = -wheels[1], -wheels[0]
     sign = -1 if reverse else 1
     return tuple((motor_id, sign * speed)
-                 for motor_id, speed in zip(ids, (wheels[0], -wheels[1])))
+                 for motor_id, speed in zip(ids, (left, -right)))
 
 
 def send(up, ids, wheels, reverse=False):

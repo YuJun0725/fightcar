@@ -3,6 +3,9 @@
 import math
 
 
+MAX_WHEEL_SPEED = 1023
+
+
 class SafetyError(ValueError):
     """输入失效时由运行循环统一停车并结束本次任务。"""
 
@@ -26,8 +29,8 @@ def validate_snapshot(snapshot, now, config):
 
 
 def validate_command(command):
-    if any(type(value) is not int or not -1023 <= value <= 1023
+    if any(type(value) is not int or not -MAX_WHEEL_SPEED <= value <= MAX_WHEEL_SPEED
            for value in (command.wheels.left, command.wheels.right)):
-        raise SafetyError("左右轮控制值必须是 -1023～1023 的整数")
+        raise SafetyError(f"左右轮控制值必须是 {-MAX_WHEEL_SPEED}～{MAX_WHEEL_SPEED} 的整数")
     if command.support not in (None, "stowed", "front", "rear"):
         raise SafetyError("未知支撑爪姿态: {!r}".format(command.support))

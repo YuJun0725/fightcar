@@ -24,7 +24,6 @@ class DriveController:
     def request(self, wheels):
         validate_command(Command(wheels=wheels))
         commands = self.commands(wheels)
-        changed = wheels != self.target
         self.target = wheels
         if wheels == WheelCommand():
             self.bus.replace("drive", ())
@@ -34,16 +33,11 @@ class DriveController:
         # 按真正发出的各路指令判断换向，涵盖只发了一路就改变方向的情况。
         if any(self.bus.sent.get(self.bus.key(cmd), (0, 0))[1] * cmd[1][1] < 0 for cmd in commands):
             self.bus.request_stop(self.ids)
-        missing = tuple(cmd for cmd in commands if not self.bus.matches(cmd))
-        if missing:
-            self.bus.replace("drive", missing)
-        elif changed:
-            self.bus.replace("drive", ())
-        elif not self.bus.pending["drive"]:
-            last_sent = max(self.bus.sent_at.get(self.bus.key(cmd), float("-inf"))
-                            for cmd in commands)
-            if self.bus.clock() - last_sent >= self.refresh_s:
-                self.bus.replace("drive", commands)
+        # 左右轮独立刷新，避免一侧频繁调速挤掉另一侧的持续输出。
+        now = self.bus.clock()
+        due = tuple(cmd for cmd in commands if not self.bus.matches(cmd)
+                    or now - self.bus.sent_at.get(self.bus.key(cmd), float("-inf")) >= self.refresh_s)
+        self.bus.replace("drive", due)
 
     @property
     def ready(self):

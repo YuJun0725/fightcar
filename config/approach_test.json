@@ -4,6 +4,9 @@
   "search_speed": 360,
   "turn_speed": 300,
   "forward_speed": 180,
+  "follow_turn_speed": 600,
+  "follow_forward_speed": 450,
+  "follow_stop_distance_m": 0.10,
   "align_deg": 6.0,
   "timeout_s": 25.0,
   "lost_timeout_s": 1.5

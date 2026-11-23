@@ -24,9 +24,10 @@ def wheel_speeds(action, speed, spin_speed, width, radius):
 
 
 def send(up, ids, wheels, reverse=False):
-    """右电机安装方向相反，只在这里把右轮速度取反。"""
+    """交换前后方向，保留转向分量，再映射电机的安装方向。"""
+    left, right = -wheels[1], -wheels[0]
     sign = -1 if reverse else 1
-    for motor_id, speed in zip(ids, (wheels[0], -wheels[1])):
+    for motor_id, speed in zip(ids, (left, -right)):
         up.CDS_SetSpeed(motor_id, sign * speed)
         time.sleep(COMMAND_GAP)
 

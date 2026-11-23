@@ -1,26 +1,29 @@
+"""只读显示板端 IO0–IO7 的当前电平。"""
 
 import time
-from uptech import UpTech
 
-up = UpTech()
-up.ADC_IO_Open()
 
-print("读取 IO0~IO7，请交替遮挡和放开传感器")
+def main():
+    from uptech import UpTech
 
-try:
-    while True:
-        values = []
+    up = UpTech()
+    status = up.ADC_IO_Open()
+    if isinstance(status, int) and status < 0:
+        print(f"打开 ADC/IO 失败 · 返回值 {status}", flush=True)
+        return 1
 
-        for i in range(8):
-            value = up.ADC_IO_GetInputLevel(i)
-            values.append(value)
+    try:
+        print("读取 IO0–IO7 · 请逐个遮挡和松开传感器 · Ctrl+C 退出", flush=True)
+        while True:
+            values = up.ADC_IO_GetAllInputLevel()
+            print("  ".join(f"IO{i}={level}" for i, level in enumerate(values)), flush=True)
+            time.sleep(0.2)
+    except KeyboardInterrupt:
+        print("\n测试结束", flush=True)
+    finally:
+        up.ADC_IO_Close()
+    return 0
 
-        print("  ".join(
-            "IO{}={}".format(i, values[i])
-            for i in range(8)
-        ))
 
-        time.sleep(0.2)
-
-except KeyboardInterrupt:
-    print("\n测试结束")
+if __name__ == "__main__":
+    raise SystemExit(main())
